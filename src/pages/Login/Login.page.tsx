@@ -1,9 +1,10 @@
 import {Label} from "../../components/ui/label.tsx";
 import {Input} from "../../components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
 export const LoginPage = () => {
+    const navigate = useNavigate();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -13,6 +14,17 @@ export const LoginPage = () => {
             email,
             password
         };
+        const response = await fetch("http://localhost:3000/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        const token = result.token;
+        localStorage.setItem("token", token);
+        navigate("/");
     }
     return (
         <>
